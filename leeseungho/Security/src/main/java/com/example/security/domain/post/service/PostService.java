@@ -38,7 +38,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
         // 인가: 로그인한 사람이 게시글 작성자인지 확인
-        if (!post.isWrittenBy(userId)) {
+        if (!isAdmin && !post.isWrittenBy(userId)) {
             throw new ForbiddenException(ErrorCode.POST_FORBIDDEN);
         }
 
