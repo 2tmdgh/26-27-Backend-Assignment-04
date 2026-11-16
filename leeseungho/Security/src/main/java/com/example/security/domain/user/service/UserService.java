@@ -1,7 +1,7 @@
 package com.example.security.domain.user.service;
 
+import com.example.security.domain.user.dto.AdminMeResponse;
 import com.example.security.domain.user.dto.UserResponse;
-import com.example.security.domain.user.entity.Role;
 import com.example.security.domain.user.entity.User;
 import com.example.security.domain.user.repository.UserRepository;
 import com.example.security.global.exception.ErrorCode;
@@ -22,5 +22,12 @@ public class UserService {
                 .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
         return UserResponse.from(user);
+    }
+
+    public AdminMeResponse getAdminInfo(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        return AdminMeResponse.from(user);
     }
 }

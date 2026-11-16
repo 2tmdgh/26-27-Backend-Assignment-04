@@ -22,6 +22,9 @@ public class JwtProvider {
     private final long accessTokenExpiration;
     private final long refreshTokenExpiration;
 
+    public record AccessTokenInfo(Long userId, String role) {
+    }
+
     public JwtProvider(@Value("${jwt.secret}") String secret,
                        @Value("${jwt.access-token-expiration}") long accessTokenExpiration,
                        @Value("${jwt.refresh-token-expiration}") long refreshTokenExpiration) {
@@ -53,37 +56,34 @@ public class JwtProvider {
                 .compact();
     }
 
+    public AccessTokenInfo parseAccessToken(String token) {
+        Claims claims = parseClaims(token, ACCESS);
+
+        Long userId = Long.valueOf(claims.getSubject());
+        String role = claims.get("role", String.class);
+
+        if (role == null || role.isBlank()) {
+            throw new JwtException("토큰에 권한 정보가 없습니다.");
+        }
+        return new AccessTokenInfo(userId, role);
+    }
+
     // 토큰 검증하기
     // 서명이 틀리거나, 만료됐거나, 종류가 다르면 JwtException이 발생합니다.
-    public Long getUserIdFromAccessToken(String token) {
-        return getUserId(token, ACCESS);
-    }
-
     public Long getUserIdFromRefreshToken(String token) {
-        return getUserId(token, REFRESH);
-    }
-
-    private Long getUserId(String token, String expectedType) {
-        Claims claims = Jwts.parser()
-                .verifyWith(secretKey)
-                .build()
-                .parseSignedClaims(token)   // 여기서 서명과 만료를 검사합니다.
-                .getPayload();
-
-        if (!expectedType.equals(claims.get("type", String.class))) {
-            throw new JwtException("토큰 종류가 올바르지 않습니다.");
-        }
-
+        Claims claims = parseClaims(token, REFRESH);
         return Long.valueOf(claims.getSubject());
     }
 
-    public String getRoleFromAccessToken(String token) {
+    private Claims parseClaims(String token, String expectedType) {
         Claims claims = Jwts.parser()
                 .verifyWith(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-
-        return claims.get("role", String.class);
+        if (!expectedType.equals(claims.get("type", String.class))) {
+            throw new JwtException("토큰 종류가 올바르지 않습니다.");
+        }
+        return claims;
     }
 }

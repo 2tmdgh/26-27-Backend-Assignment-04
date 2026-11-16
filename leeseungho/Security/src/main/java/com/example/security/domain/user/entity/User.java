@@ -32,9 +32,9 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
-    public User(String email, String password, Role role) {
+    public User(String email, String password) {
         this.email = email;
         this.password = password;
-        this.role = role;
+        this.role = Role.USER;
     }
 }

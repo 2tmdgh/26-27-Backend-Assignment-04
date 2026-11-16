@@ -6,7 +6,6 @@ import com.example.security.domain.auth.dto.SignupRequest;
 import com.example.security.domain.auth.dto.TokenResponse;
 import com.example.security.domain.auth.entity.RefreshToken;
 import com.example.security.domain.auth.repository.RefreshTokenRepository;
-import com.example.security.domain.user.entity.Role;
 import com.example.security.domain.user.entity.User;
 import com.example.security.domain.user.repository.UserRepository;
 import com.example.security.global.exception.ConflictException;
@@ -37,7 +36,7 @@ public class AuthService {
         }
 
         try {
-            userRepository.saveAndFlush(new User(email, passwordEncoder.encode(request.password()), Role.USER));
+            userRepository.saveAndFlush(new User(email, passwordEncoder.encode(request.password())));
         } catch (DataIntegrityViolationException e) {
             throw new ConflictException(ErrorCode.DUPLICATE_EMAIL, e);
         }

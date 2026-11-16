@@ -26,7 +26,7 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN("AUTH_003", HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),
     REFRESH_TOKEN_NOT_FOUND("AUTH_004", HttpStatus.UNAUTHORIZED, "로그인 기록이 없습니다."),
     REFRESH_TOKEN_REUSED("AUTH_005", HttpStatus.UNAUTHORIZED, "이미 사용한 Refresh Token입니다."),
-    TOKEN_NOT_USING("AUTH_006", HttpStatus.UNAUTHORIZED, "로그인이 필요합니다."),
+    TOKEN_NOT_USING("AUTH_006", HttpStatus.UNAUTHORIZED, "토큰을 입력하세요."),
     ACCESS_PERMISSION_REQUIRED("AUTH_007", HttpStatus.FORBIDDEN, "관리자의 권한이 필요합니다."),
     INVALID_TOKEN_TYPE("AUTH_008", HttpStatus.UNAUTHORIZED, "잘못된 토큰 타입입니다."),
 

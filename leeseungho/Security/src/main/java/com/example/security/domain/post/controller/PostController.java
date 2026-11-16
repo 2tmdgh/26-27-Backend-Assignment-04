@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,10 +41,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePost(@PathVariable @Positive(message = "게시글 id는 양수여야 합니다.") Long postId,
-                           @AuthenticationPrincipal Long userId,
-                           Authentication authentication) {
-        boolean isAdmin = authentication.getAuthorities().stream()
-                        .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-        postService.deletePost(postId, userId, isAdmin);
+                           @AuthenticationPrincipal Long userId) {
+        postService.deletePost(postId, userId);
     }
 }

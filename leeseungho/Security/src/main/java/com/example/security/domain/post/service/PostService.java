@@ -4,6 +4,9 @@ import com.example.security.domain.post.dto.PostCreateRequest;
 import com.example.security.domain.post.dto.PostResponse;
 import com.example.security.domain.post.entity.Post;
 import com.example.security.domain.post.repository.PostRepository;
+import com.example.security.domain.user.entity.Role;
+import com.example.security.domain.user.entity.User;
+import com.example.security.domain.user.repository.UserRepository;
 import com.example.security.global.exception.ErrorCode;
 import com.example.security.global.exception.ForbiddenException;
 import com.example.security.global.exception.NotFoundException;
@@ -19,6 +22,7 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public PostResponse createPost(Long userId, PostCreateRequest request) {
@@ -33,12 +37,17 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, Long userId, boolean isAdmin) {
+    public void deletePost(Long postId, Long userId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException(ErrorCode.POST_NOT_FOUND));
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        boolean isAdmin = user.getRole() == Role.ADMIN;
+
         // 인가: 로그인한 사람이 게시글 작성자인지 확인
-        if (!isAdmin && !post.isWrittenBy(userId)) {
+        if (!post.isWrittenBy(userId) && !isAdmin) {
             throw new ForbiddenException(ErrorCode.POST_FORBIDDEN);
         }
 

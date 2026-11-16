@@ -1,6 +1,6 @@
 package com.example.security.domain.user.controller;
 
-import com.example.security.domain.user.dto.UserResponse;
+import com.example.security.domain.user.dto.AdminMeResponse;
 import com.example.security.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,7 +16,7 @@ public class AdminController {
     private final UserService userService;
 
     @GetMapping("/me")
-    public UserResponse getAdminInfo(@AuthenticationPrincipal Long userId) {
-        return userService.getMyInfo(userId);
+    public AdminMeResponse getAdminInfo(@AuthenticationPrincipal Long userId) {
+        return userService.getAdminInfo(userId);
     }
 }

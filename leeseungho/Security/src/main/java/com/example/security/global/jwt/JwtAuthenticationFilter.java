@@ -30,19 +30,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                // 2. 토큰 검증하고 userId 꺼내기
-                Long userId = jwtProvider.getUserIdFromAccessToken(token);
-                String role = jwtProvider.getRoleFromAccessToken(token);
-
-                if (role == null || role.isBlank()) {
-                    throw new JwtException("토큰에 권한 정보가 없습니다.");
-                }
+                JwtProvider.AccessTokenInfo tokenInfo = jwtProvider.parseAccessToken(token);
 
                 // 3. "이 요청은 userId 사용자가 보냈다"는 인증 정보 만들기
                 Authentication authentication = UsernamePasswordAuthenticationToken.authenticated(
-                        userId,                                         // principal: 누구인지
+                        tokenInfo.userId(),                                        // principal: 누구인지
                         null,                                           // credentials: 검증 끝났으니 필요 없음
-                        List.of(new SimpleGrantedAuthority("ROLE_" + role)) // authorities: 권한
+                        List.of(new SimpleGrantedAuthority("ROLE_" + tokenInfo.role())) // authorities: 권한
                 );
 
                 // 4. SecurityContext에 저장 → 이제 Spring Security가 "인증된 요청"으로 봅니다.
