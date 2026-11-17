@@ -90,30 +90,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.from(errorCode));
     }
 
-    // 토큰 없이 로그인
-    @ExceptionHandler(TokenNotUsingException.class)
-    public ResponseEntity<ErrorResponse> handleTokenNotUsingException(TokenNotUsingException e) {
-        ErrorCode errorCode = ErrorCode.TOKEN_NOT_USING;
-        log.warn("[TokenNotUsingException] message: {}", e.getMessage());
-        return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.from(errorCode));
-    }
-
-    // 일반 사용자 Access Token
-    @ExceptionHandler(AccessPermissionRequiredException.class)
-    public ResponseEntity<ErrorResponse> handleAccessPermissionRequiredException(AccessPermissionRequiredException e) {
-        ErrorCode errorCode = ErrorCode.ACCESS_PERMISSION_REQUIRED;
-        log.warn("[AccessPermissionRequiredException] message: {}", e.getMessage());
-        return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.from(errorCode));
-    }
-
-    // Refresh Token -> Access Token 관리자  API 요청
-    @ExceptionHandler(InvalidTokenTypeException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidTokenTypeException(InvalidTokenTypeException e) {
-        ErrorCode errorCode = ErrorCode.INVALID_TOKEN_TYPE;
-        log.warn("[InvalidTokenTypeException] message: {}", e.getMessage());
-        return ResponseEntity.status(errorCode.getStatus()).body(ErrorResponse.from(errorCode));
-    }
-
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
